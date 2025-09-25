@@ -16,7 +16,7 @@ end
 local sg = Instance.new("ScreenGui", p:WaitForChild("PlayerGui"))
 local f = Instance.new("Frame", sg)
 f.Size = UDim2.new(0,220,0,120)
-f.Position = UDim2.new(0.5,-110,0.85,0)
+f.Position = UDim2.new(0.5,-110,0.5,-60)
 f.BackgroundColor3 = Color3.fromRGB(30,30,30)
 f.Active = true
 
@@ -77,4 +77,4 @@ u.InputBegan:Connect(function(i,g)
         task.wait(1)
         cd = false
     end
-end)# test1
+end)
