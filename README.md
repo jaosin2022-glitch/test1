@@ -3,7 +3,7 @@
 local p = game.Players.LocalPlayer
 local m = p:GetMouse()
 local u = game:GetService("UserInputService")
-local tE, iE, cd = false, false, false
+local tE,iE,nE,cd=false,false,false
 
 local function c() return p.Character or p.CharacterAdded:Wait() end
 local function r() return c():FindFirstChild("HumanoidRootPart") end
@@ -15,18 +15,23 @@ local function inv(e)
     local h = char:FindFirstChildOfClass("Humanoid")
     if h then h.NameDisplayDistance = e and 0 or 100 end
 end
+local function noclip(e)
+    for _,v in ipairs(c():GetChildren()) do
+        if v:IsA("BasePart") then v.CanCollide = not e end
+    end
+end
 
-local sg = Instance.new("ScreenGui", p:WaitForChild("PlayerGui"))
-local f = Instance.new("Frame", sg)
-f.Size = UDim2.new(0,220,0,120)
-f.Position = UDim2.new(0.5,-110,0.5,-60)
+local sg = Instance.new("ScreenGui",p:WaitForChild("PlayerGui"))
+local f = Instance.new("Frame",sg)
+f.Size = UDim2.new(0,220,0,160)
+f.Position = UDim2.new(0.5,-110,0.5,-80)
 f.BackgroundColor3 = Color3.fromRGB(30,30,30)
 f.Active = true
 
-local drag, dI, dS, sP
+local drag,dI,dS,sP
 f.InputBegan:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton1 then
-        drag, dS, sP = true, i.Position, f.Position
+        drag,dS,sP=true,i.Position,f.Position
         i.Changed:Connect(function() if i.UserInputState==Enum.UserInputState.End then drag=false end end)
     end
 end)
@@ -38,30 +43,28 @@ u.InputChanged:Connect(function(i)
     end
 end)
 
-local tb = Instance.new("TextButton", f)
-tb.Size = UDim2.new(0.85,0,0.35,0)
-tb.Position = UDim2.new(0.075,0,0.1,0)
+local tb = Instance.new("TextButton",f)
+tb.Size = UDim2.new(0.85,0,0.22,0)
+tb.Position = UDim2.new(0.075,0,0.08,0)
 tb.Text = "Ativar Teleporte (H)"
 tb.BackgroundColor3 = Color3.fromRGB(50,180,255)
 tb.TextColor3 = Color3.fromRGB(255,255,255)
 tb.Font = Enum.Font.SourceSansBold
-tb.TextSize = 22
-
+tb.TextSize = 18
 tb.MouseButton1Click:Connect(function()
     tE = not tE
     tb.Text = tE and "Desativar Teleporte (H)" or "Ativar Teleporte (H)"
     tb.BackgroundColor3 = tE and Color3.fromRGB(60,230,150) or Color3.fromRGB(50,180,255)
 end)
 
-local ib = Instance.new("TextButton", f)
-ib.Size = UDim2.new(0.85,0,0.35,0)
-ib.Position = UDim2.new(0.075,0,0.55,0)
+local ib = Instance.new("TextButton",f)
+ib.Size = UDim2.new(0.85,0,0.22,0)
+ib.Position = UDim2.new(0.075,0,0.33,0)
 ib.Text = "Ativar Invisibilidade"
 ib.BackgroundColor3 = Color3.fromRGB(180,50,255)
 ib.TextColor3 = Color3.fromRGB(255,255,255)
 ib.Font = Enum.Font.SourceSansBold
-ib.TextSize = 22
-
+ib.TextSize = 18
 ib.MouseButton1Click:Connect(function()
     iE = not iE
     inv(iE)
@@ -69,15 +72,33 @@ ib.MouseButton1Click:Connect(function()
     ib.BackgroundColor3 = iE and Color3.fromRGB(230,60,150) or Color3.fromRGB(180,50,255)
 end)
 
-p.CharacterAdded:Connect(function() if iE then inv(true) end end)
+local nb = Instance.new("TextButton",f)
+nb.Size = UDim2.new(0.85,0,0.22,0)
+nb.Position = UDim2.new(0.075,0,0.58,0)
+nb.Text = "Atravesar Paredes"
+nb.BackgroundColor3 = Color3.fromRGB(255,180,50)
+nb.TextColor3 = Color3.fromRGB(30,30,30)
+nb.Font = Enum.Font.SourceSansBold
+nb.TextSize = 18
+nb.MouseButton1Click:Connect(function()
+    nE = not nE
+    noclip(nE)
+    nb.Text = nE and "Desligar Atravesar Paredes" or "Atravesar Paredes"
+    nb.BackgroundColor3 = nE and Color3.fromRGB(230,120,60) or Color3.fromRGB(255,180,50)
+end)
+
+p.CharacterAdded:Connect(function()
+    if iE then inv(true) end
+    if nE then noclip(true) end
+end)
 
 u.InputBegan:Connect(function(i,g)
     if g then return end
     if tE and i.KeyCode==Enum.KeyCode.H and not cd then
-        cd = true
-        local rp = r()
+        cd=true
+        local rp=r()
         if rp then rp.CFrame = CFrame.new(m.Hit.p) end
         task.wait(1)
-        cd = false
+        cd=false
     end
 end)
