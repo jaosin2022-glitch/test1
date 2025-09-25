@@ -8,9 +8,12 @@ local tE, iE, cd = false, false, false
 local function c() return p.Character or p.CharacterAdded:Wait() end
 local function r() return c():FindFirstChild("HumanoidRootPart") end
 local function inv(e)
-    for _,v in ipairs(c():GetChildren()) do
+    local char = c()
+    for _,v in ipairs(char:GetChildren()) do
         if v:IsA("BasePart") or v:IsA("Decal") then v.Transparency = e and 1 or 0 end
     end
+    local h = char:FindFirstChildOfClass("Humanoid")
+    if h then h.NameDisplayDistance = e and 0 or 100 end
 end
 
 local sg = Instance.new("ScreenGui", p:WaitForChild("PlayerGui"))
